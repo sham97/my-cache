@@ -6,12 +6,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
+    - name: Clean global cache
+      run: npm cache clean --force
+    - name: Setup Node
+      uses: ./
       with:
-        node-version: 16
-        cache: 'npm'
-        
-    
-    - run: npm ci
-    - run: npm test
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+    - name: Install dependencies
+      run: npm install
+    - name: Verify node and npm
+      run: __tests__/verify-node.sh "${{ matrix.node-version }}"
+      shell: bash
+
       
