@@ -10,6 +10,5 @@ jobs:
         with:
           node-version: '12'
           cache: 'npm'
-      - name: npm installation
       - run: npm install
       
