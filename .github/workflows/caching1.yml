@@ -32,4 +32,4 @@ jobs:
           ${{ runner.os }}-node-
         node-version: '14'
         run: |
-              npm install
+              npm i
