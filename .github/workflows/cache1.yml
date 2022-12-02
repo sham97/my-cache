@@ -19,4 +19,4 @@ jobs:
             ${{ runner.os }}-node-
             
           node-version: 14.x
-          run: npm install # or yarn install
+          run: npm insta # or yarn install
