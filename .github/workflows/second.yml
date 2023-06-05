@@ -45,7 +45,7 @@ jobs:
         echo -n "verifying images:"
         docker images   
     - name: Deploying CI-K8s
-      run: kubectl apply -f /K8s
+      run: kubectl apply -f ./K8s
     - name: Test service URLs
       run: |
         minikube service list
