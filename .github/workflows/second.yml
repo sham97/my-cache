@@ -1,16 +1,56 @@
-name: ci-cache
-on: push
+name: CI-K8s sample
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+on:
+  push:
+    branches :
+    - main
+
+jobs: 
+  Minikube-Installation :
+    runs-on             : ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    name                : Minikube Minikube-Installation
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
-        cache: 'npm'
-        cache-dependency-path: subdir/package-lock.json
-    - run: npm ci
-    - run: npm test
-      
+    - name: Start minikube
+      uses: medyagh/setup-minikube@master
+    - name: Try the cluster !
+      run: kubectl get pods -A
+
+    # - uses: actions/setup-node@v3
+    #   with:
+    #     node-version: ${{matrix.node-version}}
+
+    # - name: Cache node modules
+    #   uses: actions/cache@v3
+    #   id: npm_cache_id
+    #   with:
+    #     path: node_modules
+    #     key: ${{ runner.os }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+    #     restore-keys: |
+    #       ${{ runner.os }}-npm-cache-
+    #       ${{ runner.os }}-
+    
+    # - name: Install Dependencies
+    #   if: steps.npm_cache_id.outputs.cache-hit != 'true'
+    #   run: npm ci
+
+    - name: Build image
+      run: |
+        export SHELL=/bin/bash
+        eval $(minikube -p minikube docker-env)
+        docker build -f ./Dockerfile -t my-web .
+        echo -n "verifying images:"
+        docker images   
+    - name: Deploying CI-K8s
+      run: kubectl apply -f /K8s
+    - name: Test service URLs
+      run: |
+        minikube service list
+        minikube service myapp --url
+        echo "------------------opening the service------------------"
+        curl $(minikube service myapp --url)  
+    
+  

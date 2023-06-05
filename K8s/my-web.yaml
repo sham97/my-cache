@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: my-web
-        image: illthizam/my-web:latest
+        image: my-web
         resources:
           requests:
             memory: "64Mi"
